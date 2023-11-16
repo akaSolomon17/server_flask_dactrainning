@@ -6,7 +6,7 @@ from flask_restful import Api, Resource
 from dotenv import load_dotenv
 from routes.userRoute import initialRoutes
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime,UTC
 # from models.initDB import dbInit, db
 
 app = Flask(__name__)
@@ -39,8 +39,8 @@ class Campaign(db.Model):
     user_id = db.Column(db.BIGINT, db.ForeignKey('user.user_id'),nullable=False)
     final_url = db.Column(db.NVARCHAR(255), nullable=False)
     user_update = db.Column(db.BIGINT, nullable=False)
-    create_at = db.Column(db.TIMESTAMP, default=datetime.utcnow())
-    update_at = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    create_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC))
+    update_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC))
     delete_flag = db.Column(db.BOOLEAN, default=False)
     
     user = db.relationship('User',backref = db.backref('campaign'), lazy=True)
@@ -66,11 +66,11 @@ class User(db.Model):
     first_name = db.Column(db.VARCHAR(255),unique = False, nullable = False)
     last_name = db.Column(db.VARCHAR(255),unique = False,nullable = False)
     email = db.Column(db.NVARCHAR(120),nullable = False)
-    email_verified_at = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    email_verified_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC))
     password = db.Column(db.NVARCHAR(255),nullable = False)
     remember_token = db.Column(db.NVARCHAR(255),nullable = False)
-    create_at = db.Column(db.TIMESTAMP, default=datetime.utcnow())
-    update_at = db.Column(db.TIMESTAMP, default=datetime.utcnow(), onupdate=datetime.utcnow())
+    create_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC))
+    update_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC), onupdate=datetime.now(UTC))
     image = db.Column(db.NVARCHAR(255), nullable=False)
     role_id = db.Column(db.Enum('1','2','3'),db.ForeignKey('roles.role_id'), nullable=False)
 
