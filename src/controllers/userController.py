@@ -1,10 +1,10 @@
 import json, jwt, os
 
-from jwt.exceptions import InvalidTokenError, DecodeError, ExpiredSignatureError, InvalidSignatureError
+from jwt.exceptions import *
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
-
+#FLASK
 from flask import Flask, request, make_response
 from flask_restful import Resource, Api
 
@@ -77,11 +77,14 @@ accounts = {
     }
 }
 
+# USER MODELS
 
     # LOGIN
 class login(Resource):
     def post(self, account_id):
         try:
+            from main import User,db
+            
             content_type = request.headers.get('Content-Type')
             if content_type == "application/json":
                 json= request.get_json()
@@ -93,8 +96,9 @@ class login(Resource):
 
                 if password=="" or email=="":
                     return errConfig.statusCode("Please fill in email/password field!",401)
-            
-                if accounts[account_id]["email"] != email :
+
+                checkEmail = db.session.execute(db.select(User).filter_by(email = email)).scarla_one()
+                if not checkEmail:
                     return errConfig.statusCode("Wrong email!",401)
 
                 if accounts[account_id]["password"] != password :

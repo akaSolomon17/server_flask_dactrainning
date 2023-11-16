@@ -1,16 +1,17 @@
-import os
+# import os
 
-from flask import Flask
-from dotenv import load_dotenv
-from flask_sqlalchemy import SQLAlchemy
+# from flask import Flask
+# from dotenv import load_dotenv
+# from flask_sqlalchemy import SQLAlchemy
 
-# Load variables in .env environment
-load_dotenv()
-DB_URL = os.getenv('DB_URL')
+# # Load variables in .env environment
+# load_dotenv()
+# DB_URL = os.getenv('DB_URL')
+# db = SQLAlchemy()
+# def dbInit(app):
+#     app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
+#     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
+    
 
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy()
-
-db.create_all()
+#     db.create_all()
