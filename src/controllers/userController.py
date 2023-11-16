@@ -103,7 +103,7 @@ class login(Resource):
                 refresh_token = createRefreshToken(account_id)
                 response = errConfig.statusCode("Login successful!")
                 # response.set_cookie('RefreshToken', refresh_token,max_age=604800000,httponly=True,path='/refresh_token')
-                response.set_cookie('RefreshToken', refresh_token, 604800000, None, '/refresh_token', None, None, True)
+                response.set_cookie('RefreshToken', refresh_token, 604800000, None, '/api/refresh_token', None, None, True)
                 return response
 
             else: return "Content-Type not support!"
@@ -158,7 +158,7 @@ class logout(Resource):
     def get(self):
         try:
             response = errConfig.statusCode("Logout successful!")
-            response.delete_cookie('RefreshToken','/refresh_token')
+            response.delete_cookie('RefreshToken','/api/refresh_token')
             return response
         except:
             pass
