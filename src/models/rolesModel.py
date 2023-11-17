@@ -1,12 +1,14 @@
-# from flask import Flask
-# from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
-# from .initDB import db
+from main import db
 
-# class Roles(db.Model):
-#     role_id = db.Column(db.Enum('1','2','3'), primary_key=True)
-#     role_name = db.Column(db.Enum('Admin', 'DAC', 'Advertiser'), default = 'Admin', nullable=False,unique=True)
+
+class Roles(db.Model):
+    role_id = db.Column(db.Enum('1','2','3'), primary_key=True)
+    role_name = db.Column(db.Enum('Admin', 'DAC', 'Advertiser'), default = 'Admin', nullable=False,unique=True)
     
-#     def __init__(self, role_id, role_name):
-#         self.role_id = role_id
-#         self.role_name = role_name
+    def __init__(self, role_id, role_name):
+        self.role_id = role_id
+        self.role_name = role_name
+
