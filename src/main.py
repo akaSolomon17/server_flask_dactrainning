@@ -3,13 +3,16 @@ import os, json, sys
 from flask import Flask
 from flask_restful import Api, Resource
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 def create_app():
     from initSQL import db
     
     app = Flask(__name__)
     api = Api(app)
-
+    # Cross-origin
+    CORS(app)
+    
     # Load variables in .env environment
     load_dotenv()
     DB_URL = os.getenv('DB_URL')

@@ -12,8 +12,8 @@ class User(db.Model):
   email_verified_at = db.Column(db.TIMESTAMP, default=datetime.now())
   password = db.Column(db.NVARCHAR(255),nullable = False)
   remember_token = db.Column(db.NVARCHAR(255))
-  create_at = db.Column(db.TIMESTAMP, default=datetime.now() + timedelta(hours=7))
-  update_at = db.Column(db.TIMESTAMP, default=datetime.now() + timedelta(hours=7), onupdate=datetime.now() + timedelta(hours=7))
+  create_at = db.Column(db.TIMESTAMP, default=datetime.now())
+  update_at = db.Column(db.TIMESTAMP, default=datetime.now(), onupdate=datetime.now())
   image = db.Column(db.NVARCHAR(255), default="https://res.cloudinary.com/dooge27kv/image/upload/v1667982724/project/avatar.png")
   role_id = db.Column(db.Enum('1','2','3'),db.ForeignKey('roles.role_id'), nullable=False)
 

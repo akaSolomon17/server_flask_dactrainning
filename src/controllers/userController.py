@@ -77,13 +77,14 @@ class login(Resource):
                 
                 User = User.query.filter_by(email = email).one_or_404('Account is not exist!')
 
-                if User.password != password :
+                checkPW = bcrypt.checkpw(password,User.password)
+                if not checkPW:
                     return errConfig.statusCode("Wrong password!",401)
                  
                 refresh_token = createRefreshToken(User.user_id)
                 
                 response = errConfig.statusCode("Login successful!")
-                response.set_cookie('RefreshToken', refresh_token, max_age=7*24*60*60*1000, path='/api/refresh_token', httponly=True)
+                response.set_cookie('RefreshToken', refresh_token, max_age=7 * 24 * 60 * 60, path='/api/refresh_token', httponly=True) #Max_age is seconds not miliseconds.
                 
                 return response
 
