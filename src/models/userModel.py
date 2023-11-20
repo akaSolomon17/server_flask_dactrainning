@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from datetime import datetime, UTC
+from datetime import datetime,timedelta
 from initSQL import db
 
 class User(db.Model):
@@ -9,11 +9,11 @@ class User(db.Model):
   first_name = db.Column(db.VARCHAR(255),unique = False, nullable = False)
   last_name = db.Column(db.VARCHAR(255),unique = False,nullable = False)
   email = db.Column(db.NVARCHAR(120),nullable = False)
-  email_verified_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC))
+  email_verified_at = db.Column(db.TIMESTAMP, default=datetime.now())
   password = db.Column(db.NVARCHAR(255),nullable = False)
   remember_token = db.Column(db.NVARCHAR(255))
-  create_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC))
-  update_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC), onupdate=datetime.now(UTC))
+  create_at = db.Column(db.TIMESTAMP, default=datetime.now() + timedelta(hours=7))
+  update_at = db.Column(db.TIMESTAMP, default=datetime.now() + timedelta(hours=7), onupdate=datetime.now() + timedelta(hours=7))
   image = db.Column(db.NVARCHAR(255), default="https://res.cloudinary.com/dooge27kv/image/upload/v1667982724/project/avatar.png")
   role_id = db.Column(db.Enum('1','2','3'),db.ForeignKey('roles.role_id'), nullable=False)
 

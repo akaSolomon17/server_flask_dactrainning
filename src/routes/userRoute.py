@@ -17,7 +17,7 @@ def initialRoutes(api):
     api.add_resource(logout,"/api/logout", endpoint="user_logout")
 
     # [GET] GET USER
-    api.add_resource(getUser,"/api/user_info/<string:user_id>", endpoint="get_user")
+    api.add_resource(getUser,"/api/user_info", endpoint="get_user")
 
     # [GET] GET ALL USERS
     api.add_resource(getAllUser,"/api/all_user_info", endpoint="get_all_user")

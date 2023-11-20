@@ -11,7 +11,6 @@ load_dotenv()
 
 ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
 
-
 def authMiddleware(func):
     @wraps(func)
     def middleware(*args, **kwargs):
@@ -29,5 +28,6 @@ def authMiddleware(func):
         except jwt.InvalidTokenError:
             return errorStatus.statusCode("Invalid Authentication.", 400)
         except Exception as e:
-            return errorStatus.statusCode(str(e), 500)
+            # return errorStatus.statusCode(str(e), 500)
+            return str(e)
     return middleware

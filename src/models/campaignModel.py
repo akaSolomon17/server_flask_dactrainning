@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from datetime import datetime, UTC
+from datetime import datetime, timedelta
 from initSQL import db
 
 class Campaign(db.Model):
@@ -20,8 +20,8 @@ class Campaign(db.Model):
     user_id = db.Column(db.BIGINT, db.ForeignKey('user.user_id'),nullable=False)
     final_url = db.Column(db.NVARCHAR(255), nullable=False)
     user_update = db.Column(db.BIGINT, nullable=False)
-    create_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC))
-    update_at = db.Column(db.TIMESTAMP, default=datetime.now(UTC))
+    create_at = db.Column(db.TIMESTAMP, default=datetime.now() + timedelta(hours=7))
+    update_at = db.Column(db.TIMESTAMP, default=datetime.now() + timedelta(hours=7))
     delete_flag = db.Column(db.BOOLEAN, default=False)
     
     user = db.relationship('User',backref = db.backref('campaign'), lazy=True)
