@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime, UTC
-from main import db
+from initSQL import db
 
 class Campaign(db.Model):
     campaign_id = db.Column(db.BIGINT, primary_key=True)

@@ -1,8 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from main import db
-
+from initSQL import db
 
 class Roles(db.Model):
     role_id = db.Column(db.Enum('1','2','3'), primary_key=True)
