@@ -1,4 +1,4 @@
-import json, jwt, os,re
+import json, os,re,jwt
 import bcrypt
 
 from jwt.exceptions import *
@@ -27,21 +27,23 @@ REFRESH_TOKEN_SECRET = os.getenv("REFRESH_TOKEN_SECRET")
 ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
 
 # Create Refresh Token
-def createRefreshToken(payload):
+def createRefreshToken(user_id, role_id):
     exp_time = datetime.now() + timedelta(days = 7)
     
     payload = {
-        "payload": payload,
+        "user_id": user_id,
+        "role_id": role_id,
         "exp": exp_time
     }
     
     return jwt.encode(payload,REFRESH_TOKEN_SECRET,algorithm="HS256")
 # Create Access Token
-def createAccessToken(payload):
+def createAccessToken(user_id, role_id):
     exp_time = datetime.now() + timedelta(minutes=15)
     
     payload = {
-        "payload": payload,
+        "user_id": user_id,
+        "role_id": role_id,
         "exp": exp_time
     }
     
@@ -70,21 +72,22 @@ class login(Resource):
             if content_type == "application/json":
                 json= request.get_json()
                 email = json["email"]
-                password = json["password"]
+                password = json["password"].encode('utf8')
                 
                 if password=="" or email=="":
                     return errConfig.statusCode("Please fill in email/password field!",401)
                 
                 User = User.query.filter_by(email = email).one_or_404('Account is not exist!')
-
-                checkPW = bcrypt.checkpw(password,User.password)
+                
+                checkPW = bcrypt.checkpw(password, User.password.encode('utf8'))
+                
                 if not checkPW:
                     return errConfig.statusCode("Wrong password!",401)
                  
-                refresh_token = createRefreshToken(User.user_id)
+                refresh_token = createRefreshToken(User.user_id, User.role_id)
                 
                 response = errConfig.statusCode("Login successful!")
-                response.set_cookie('RefreshToken', refresh_token, max_age=7 * 24 * 60 * 60, path='/api/refresh_token', httponly=True) #Max_age is seconds not miliseconds.
+                response.set_cookie('RefreshToken', refresh_token, max_age=7 * 24 * 60 * 60, path='/api/refresh_token', httponly=True) # Max_age is seconds not miliseconds.
                 
                 return response
 
@@ -100,19 +103,21 @@ class getAccessToken(Resource):
                 
         from models.userModel import User
         try:
-            json= request.get_json()
-            user_id = json["user_id"]
+            refresh_token = request.cookies.get('RefreshToken')
+            
+            user = jwt.decode(refresh_token, REFRESH_TOKEN_SECRET, algorithms=["HS256"])
+            user_id = user['user_id']
             
             User = User.query.filter_by(user_id = user_id).one_or_404()
             
-            refresh_token = request.cookies.get('RefreshToken')
+            
             if not refresh_token:
                 return errConfig.statusCode("Please login again!",401)
 
             try:
                 jwt.decode(refresh_token,REFRESH_TOKEN_SECRET,"HS256")
 
-                access_token = createAccessToken(User.user_id)
+                access_token = createAccessToken(User.user_id,User.role_id)
 
                 return errConfig.msgFeedback(access_token)
 
@@ -125,9 +130,9 @@ class getAccessToken(Resource):
             except ExpiredSignatureError:
                 return errConfig.statusCode("The RF token is expired",401)
             except Exception as e:
-                return errConfig.statusCode(f"An unexpected error occurred:{str(e)}",500)
+                return errConfig.statusCode("An unexpected error occurred:{str(e)}",500)
         except Exception as e:
-            return str(e)
+            return errConfig.statusCode(str(e),500)
 
     # GET USER INFOR
 
@@ -184,8 +189,10 @@ class deleteUser(Resource):
         from initSQL import db
         from models.userModel import User
         try:
-            json = request.get_json()
-            user_id = json['user_id']
+            refresh_token = request.cookies.get('RefreshToken')
+            
+            user = jwt.decode(refresh_token, REFRESH_TOKEN_SECRET, algorithms=["HS256"])
+            user_id = user['user_id']
             
             User = User.query.filter_by(user_id = user_id).one_or_404()
             if User:
@@ -224,7 +231,7 @@ class addUser(Resource):
             if len(password) < 6:
                 return errConfig.statusCode("Password must be at least 6 characters.",400)
             
-            hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
+            hashed_password = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt())
             
             user = User(first_name=first_name,last_name=last_name,email=email,password=hashed_password,role_id=role_id)
             db.session.add(user)
