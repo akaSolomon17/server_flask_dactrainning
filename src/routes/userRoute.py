@@ -8,7 +8,7 @@ from controllers.userController import login, logout, getUser, getAllUser, getAc
 def initialRoutes(api):
 
     # [POST] LOGIN
-    api.add_resource(login,"/api/login", endpoint="user_login")
+    api.add_resource(login,"/api/login", endpoint="login")
 
     # [POST] GET TOKEN
     api.add_resource(getAccessToken,"/api/refresh_token", endpoint="refresh_token")
