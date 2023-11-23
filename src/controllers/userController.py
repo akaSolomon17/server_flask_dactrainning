@@ -61,7 +61,7 @@ def find_user_by_email(email):
     user = User.query.filter_by(email=email).first()
     return user
 # USER MODELS
-    # LOGIN
+# LOGIN
 class login(Resource):
     def post(self):
         from initSQL import db
@@ -95,8 +95,7 @@ class login(Resource):
             
         except Exception as e :
             return errConfig.statusCode(str(e),500)
-    
-    # Get ACCESS_TOKEN
+# Get ACCESS_TOKEN
 class getAccessToken(Resource):
     def post(self):
         from initSQL import db
@@ -133,9 +132,7 @@ class getAccessToken(Resource):
                 return errConfig.statusCode("An unexpected error occurred:{str(e)}",500)
         except Exception as e:
             return errConfig.statusCode(str(e),500)
-
-    # GET USER INFOR
-
+# GET USER INFOR
 class getUser(Resource):
     @authMiddleware
     def get(self):
@@ -155,8 +152,7 @@ class getUser(Resource):
         User_dict.pop('_sa_instance_state', None) # Disable _sa_instance_state of SQLAlchemy (_sa_instance_state can't convert JSON)
         
         return jsonify(User_dict)
-
-    # GET ALL USER INFO
+# GET ALL USER INFO
 class getAllUser(Resource):
     @authMiddleware
     @authMiddlewareAdmin
@@ -169,9 +165,7 @@ class getAllUser(Resource):
         tuple_user = [{'user_id': user.user_id,'first_name': user.first_name, 'last_name': user.last_name,'email': user.email, 'create_at': user.create_at,'update_at': user.update_at,'image': user.image,'role_id': user.role_id} for user in users]
 
         return jsonify(users=tuple_user)
-
-
-    # LOGOUT
+# LOGOUT
 class logout(Resource):
     def get(self):
         try:
@@ -180,8 +174,7 @@ class logout(Resource):
             return response
         except Exception as e:
             return errConfig.statusDefault(5)
-
-    # DELETE USER
+# DELETE USER
 class deleteUser(Resource):
     @authMiddleware
     @authMiddlewareAdmin
@@ -189,9 +182,9 @@ class deleteUser(Resource):
         from initSQL import db
         from models.userModel import User
         try:
-            refresh_token = request.cookies.get('RefreshToken')
+            access_token = request.header.get('Authorization')
             
-            user = jwt.decode(refresh_token, REFRESH_TOKEN_SECRET, algorithms=["HS256"])
+            user = jwt.decode(refresh_token, ACCESS_TOKEN_SECRET, algorithms=["HS256"])
             user_id = user['user_id']
             
             User = User.query.filter_by(user_id = user_id).one_or_404()
@@ -205,8 +198,7 @@ class deleteUser(Resource):
         except Exception as e:
             # return errConfig.statusDefault(4)
             return errConfig.statusCode(str(e),500)
-    
-    # ADD USER    
+# ADD USER    
 class addUser(Resource):
     @authMiddleware
     @authMiddlewareAdmin

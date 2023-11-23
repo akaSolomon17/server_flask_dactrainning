@@ -1,3 +1,5 @@
+import uuid
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -5,21 +7,17 @@ from datetime import datetime, timedelta
 from initSQL import db
 
 class Campaign(db.Model):
-    campaign_id = db.Column(db.BIGINT, primary_key=True)
+    campaign_id = db.Column(NVARCHAR(16), primary_key=True, default=uuid.uuid4().bytes)
     name = db.Column(db.NVARCHAR(120), nullable=False)
-    status = db.Column(db.Enum('ACTIVE', 'INACTIVE'), default='ACTIVE', nullable=False)
-    used_amount = db.Column(db.BIGINT, nullable=False)
+    user_status = db.Column(Enum('ACTIVE', 'INACTIVE'), default='ACTIVE', nullable=False)
+    budget = db.Column(db.INT, nullable=False)
+    used_amount = db.Column(db.INT, nullable=False)
     usage_rate = db.Column(db.FLOAT, nullable=False)
-    budget = db.Column(db.BIGINT, nullable=False)
-    bid_amount = db.Column(db.BIGINT, nullable=False)
-    start_date = db.Column(db.TIMESTAMP, nullable=False)
-    end_date = db.Column(db.TIMESTAMP, nullable=False)
-    title = db.Column(db.NVARCHAR(120), nullable=False)
-    description = db.Column(db.NVARCHAR(255), nullable=False)
-    preview_image = db.Column(db.VARCHAR(255), nullable=False)
-    user_id = db.Column(db.BIGINT, db.ForeignKey('user.user_id'),nullable=False)
-    final_url = db.Column(db.NVARCHAR(255), nullable=False)
-    user_update = db.Column(db.BIGINT, nullable=False)
+    bid_amount = db.Column(db.INT, nullable=False)
+    start_date = db.Column(db.DATETIME, nullable=False)
+    end_date = db.Column(db.DATETIME, nullable=False)
+    creative_id = db.Column(db.INT, nullable=False)
+    user_id = db.Column(db.NVARCHAR(16), db.ForeignKey('user.user_id'),nullable=False)
     create_at = db.Column(db.TIMESTAMP, default=datetime.now())
     update_at = db.Column(db.TIMESTAMP, default=datetime.now())
     delete_flag = db.Column(db.BOOLEAN, default=False)
@@ -35,9 +33,4 @@ class Campaign(db.Model):
         self.bid_amount = bid_amount
         self.start_date = start_date
         self.end_date = end_date
-        self.title = title
-        self.description = description
-        self.preview_image = preview_image
-        self.final_url = final_url
-        self.user_update = user_update
         self.delete_flag = delete_flag
