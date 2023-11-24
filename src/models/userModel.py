@@ -1,4 +1,4 @@
-import uuid
+import uuid,enum
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -6,13 +6,18 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime,timedelta
 from initSQL import db
 
+class RoleId(enum.Enum):
+  ADMIN = '1',
+  MANAGER = '2',
+  USER = '3'
+  
 class User(db.Model):
-  user_id = db.Column(NVARCHAR(16), primary_key=True, default=uuid.uuid4().bytes)
+  user_id = db.Column(db.NVARCHAR(16), primary_key=True, default=uuid.uuid4().bytes)
   email = db.Column(db.NVARCHAR(120), nullable = False)
   password = db.Column(db.NVARCHAR(150), nullable = False)
   first_name = db.Column(db.VARCHAR(150), nullable = False)
   last_name = db.Column(db.VARCHAR(120), nullable = False)
-  role_id = db.Column(Enum('1','2','3'),db.ForeignKey('roles.role_id'), nullable=False)
+  role_id = db.Column(db.Enum(RoleId), db.ForeignKey('roles.role_id'), nullable=False)
   address = db.Column(db.VARCHAR(255), nullable = False)
   phone = db.Column(db.VARCHAR(11), nullable = False, unique = True)
   avatar = db.Column(db.NVARCHAR(255), default="https://res.cloudinary.com/dooge27kv/image/upload/v1667982724/project/avatar.png")
