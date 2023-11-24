@@ -2,14 +2,11 @@ import uuid,enum
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+# from sqlalchemy import Enum
 
 from datetime import datetime,timedelta
 from initSQL import db
-
-class RoleId(enum.Enum):
-  ADMIN = '1',
-  MANAGER = '2',
-  USER = '3'
+from .rolesModel import RoleId
   
 class User(db.Model):
   user_id = db.Column(db.NVARCHAR(16), primary_key=True, default=uuid.uuid4().bytes)
@@ -28,7 +25,7 @@ class User(db.Model):
   
   role = db.relationship('Roles', backref=db.backref('users'), lazy=True)
     
-  def __init__(self, first_name, last_name,email,password,role_id):
+  def __init__(self, first_name, last_name,email,password,role_id,delete_flag):
     self.first_name = first_name
     self.last_name = last_name
     self.email = email
@@ -39,3 +36,4 @@ class User(db.Model):
     self.delete_flag = delete_flag
     self.address = address
     self.role_id = role_id
+    self.delete_flag = delete_flag
