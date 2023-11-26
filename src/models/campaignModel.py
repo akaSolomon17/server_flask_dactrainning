@@ -12,12 +12,11 @@ from initSQL import db
 #     INACTIVE = 'INACTIVE',
     
 class Campaign(db.Model):
-    campaign_id = db.Column(db.NVARCHAR(16), primary_key = True, default=uuid.uuid4().bytes)
+    campaign_id = db.Column(db.NVARCHAR(16), primary_key = True, default=uuid.uuid4())
     name = db.Column(db.NVARCHAR(120), nullable=False)
     user_status = db.Column(db.BOOLEAN, default = True, nullable = False)
     budget = db.Column(db.INT, nullable=False)
     bid_amount = db.Column(db.INT, nullable=False)
-    creative_id = db.Column(db.NVARCHAR(16), db.ForeignKey('creative.creative_id'), nullable=False,default=uuid.uuid4().bytes)
     user_id = db.Column(db.NVARCHAR(16), db.ForeignKey('user.user_id'),nullable=False,default=uuid.uuid4().bytes)
     used_amount = db.Column(db.INT, nullable=False)
     usage_rate = db.Column(db.FLOAT, nullable=False)
@@ -30,9 +29,9 @@ class Campaign(db.Model):
     user = db.relationship('User',backref = db.backref('campaigns'), lazy=True)
     creative = db.relationship('Creative',backref = db.backref('campaigns'), lazy=True)
     
-    def __init__(self,name,status, used_amount,usage_rate,budget,bid_amount,start_date,end_date,title,description,preview_image,final_url,user_update,delete_flag,creative_id,user_id):
+    def __init__(self,name,user_status, used_amount,usage_rate,budget,bid_amount,start_date,end_date,title,description,preview_image,final_url,user_update,delete_flag,creative_id,user_id):
         self.name = name
-        self.status = status
+        self.user_status = user_status
         self.used_amount = used_amount
         self.usage_rate = usage_rate
         self.budget = budget

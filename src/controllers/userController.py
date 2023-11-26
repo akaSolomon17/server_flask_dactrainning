@@ -144,7 +144,7 @@ class getUser(Resource):
             return errorStatus.statusCode("Invalid Authentication.", 400)
 
         user = jwt.decode(token, ACCESS_TOKEN_SECRET, algorithms=["HS256"])
-        user_id = user['payload']
+        user_id = user['user_id']
         
         User = User.query.filter_by(user_id = user_id).options(db.defer(User.password)).one_or_404()
         
@@ -229,5 +229,48 @@ class addUser(Resource):
             db.session.add(user)
             db.session.commit()
             return errConfig.statusCode("Add User successfully!")
+        except Exception as e:
+            return errConfig.statusCode(str(e),500)
+# UPDATE USER
+class updateUser(Resource):
+    @authMiddleware
+    def put(self):
+        from initSQL import db
+        from models.userModel import User
+
+        token = request.headers.get("Authorization")
+        if not token:
+            return errorStatus.statusCode("Invalid Authentication.", 400)
+        try:
+            json = request.get_json()
+            email = json['email']
+            first_name = json['first_name']
+            last_name = json['last_name']
+            role_id = json['role_id']
+            address = json['address']
+            phone = json['phone']
+            
+            user = jwt.decode(token, ACCESS_TOKEN_SECRET, algorithms=["HS256"])
+            user_id = user['user_id']
+            
+            user_to_update = User.query.filter_by(id=user_id).first()
+            
+            user_updated = User(id=user_id, email=email, first_name=first_name, last_name=last_name,role_id=role_id,address=address,phone=phone)
+            db.session.merge(user_updated)
+            db.session.commit()
+            
+        except Exception as e:
+            return errConfig.statusCode(str(e),500)
+
+# DELETE ALL USERS
+class updateUser(Resource):
+    @authMiddleware
+    @authMiddlewareAdmin
+    def delete(self):
+        from initSQL import db
+        from models.userModel import User
+        try:
+            db.session.query(User).delete()
+            db.session.commit()
         except Exception as e:
             return errConfig.statusCode(str(e),500)
